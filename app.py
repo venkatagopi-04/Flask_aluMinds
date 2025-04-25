@@ -10,7 +10,6 @@ CORS(app)
 # Load the models
 final_model_file = 'uts_elon_model.pkl'
 conductivity_model_file = 'conductivity_model_4.pkl'
-rev_model_file = ''uts_elon_model.pkl'
 elongation_model_file = 'elongation_prediction_model.pkl'
 uts_model_file = 'uts_prediction_model.pkl'
 
@@ -20,17 +19,13 @@ with open(final_model_file, 'rb') as file:
 with open(conductivity_model_file, 'rb') as file:
     conductivity_model = pickle.load(file)
 
-with open(rev_model_file, 'rb') as file:
-    rev_models = pickle.load(file)
 
 elongation_model = joblib.load(elongation_model_file)
 uts_model = joblib.load(uts_model_file)
 
-print(type(rev_models)) 
+
 
 # Ensure the reverse model file is valid
-if not isinstance(rev_models, dict):
-    raise ValueError("The loaded file does not contain a dictionary of reverse models.")
 
 # Define the prediction route
 @app.route('/predict', methods=['POST'])
@@ -70,29 +65,6 @@ def predict():
     except Exception as e:
         return jsonify({'error': str(e)})
 
-# Define the reverse prediction route
-reverse_model_features = ['uts', 'elongation', 'conductivity']
-
-@app.route('/reverse_predict', methods=['POST'])
-def reverse_predict():
-    try:
-        # Get input data
-        data = request.json
-        input_data = pd.DataFrame([data])  # Convert input to DataFrame
-
-        # Ensure input data has the correct structure
-        input_data = input_data[reverse_model_features]
-
-        # Make predictions for each target
-        predictions = {}
-        for target, model in rev_models.items():
-            predictions[target] = model.predict(input_data)[0]  # Extract the scalar value
-
-        # Return predictions as JSON
-        return jsonify(predictions)
-
-    except Exception as e:
-        return jsonify({'error': str(e)})
 
 # Define the elongation prediction route
 @app.route('/elongation_predict', methods=['POST'])

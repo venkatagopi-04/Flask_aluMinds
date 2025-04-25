@@ -10,7 +10,7 @@ CORS(app)
 # Load the models
 final_model_file = 'uts_elon_model.pkl'
 conductivity_model_file = 'conductivity_model_4.pkl'
-rev_model_file = ''
+rev_model_file = ''uts_elon_model.pkl'
 elongation_model_file = 'elongation_prediction_model.pkl'
 uts_model_file = 'uts_prediction_model.pkl'
 
